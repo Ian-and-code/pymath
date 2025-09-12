@@ -145,113 +145,6 @@ class BaseN(Base):
                     break
 
         return res_ent + res_frac
-
-
-
-
-
-
-
-
-
-
-
-
-#hiperreales
-
-inf = float('inf')
-neginf = inf * -1
-eps = 1e-20
-negeps = eps * -1
-
-# Constantes matemáticas
-PI = 3.141592653589793
-TAU = 2 * PI
-EULER = 2.718281828459045
-
-def delta(x):
-    n = abs(int(x))
-    delta_n = (n + ((n ** 2) + 4) ** 0.5)/2
-    return delta_n
-
-PHI = delta(1) # Número áureo
-PHIcong = -(PHI-1)
-delta2 = delta(2)
-delta3 = delta(3)
-
-def nbonacci_phi(n, tol=1e-15, max_iter=1000):
-    # Inicializamos cocientes aproximados
-    ratio = 2.0
-    prev = [1.0]*n
-    for _ in range(max_iter):
-        next_val = sum(prev)
-        next_ratio = next_val / prev[-1]
-        if abs(next_ratio - ratio) < tol:
-            return next_ratio
-        ratio = next_ratio
-        prev = prev[1:] + [next_val]
-    return ratio
-
-def champernowne(base_class, base, terms=50, prec=200):
-    b = base_class(base)
-    s = ""
-    for i in range(1, terms+1):
-        s += b.to_base(i, 0)  # sin parte fraccionaria
-    return "0." + s[:prec]
-        
-    ceinf = "".join(susce)
-    c = 0 + (int(ceinf)/(base ** len(ceinf)))
-    return c
-    
-CHAMPERNOWNE = champernowne(BaseP, 10, 102, 200)
-
-CATALAN = 0.915965594177219  # Constante de Catalan
-ZETA2 = 1.6449340668482264   # ζ(2) = π^2 / 6
-ZETA4 = 1.082323233711138    # ζ(4) = π^4 / 90
-GLAISHER = 1.2824271291006226  # Constante de Glaisher–Kinkelin
-KAPREKAR = 6174              # Número de Kaprekar
-
-# Constantes de teoría de números y análisis
-EULER_MASCHERONI = 0.5772156649015329
-SQRT_2 = 1.4142135623730951
-SQRT_3 = 1.7320508075688772
-
-# Constantes en grados y conversiones
-RADIANS = TAU
-DEGREES = 360
-GRADIANS = 400
-
-def conv(angle, actype, totype):
-    return angle * ((totype/2)/(actype/2))
-    
-# Constantes que aparecen en la geometría
-APERY_CONSTANT = 1.2020569031595942 # Suma de los recíprocos de los cubos de los números naturales
-
-SQRT5 = 2.23606797749979      # Raíz cuadrada de 5
-LEMNISCATE = 2.622057554292119 # Longitud de la lemniscata de Bernoulli
-
-def constshelp():
-    consts = []
-    for var, value in zip(globals().copy().keys(), globals().copy().values()):
-        if isinstance(value, float):
-            consts.append(var)
-    return consts
-
-def funcshelp():
-    funcs = []
-    for var, value in globals().copy().items():
-        if isinstance(value, types.FunctionType):
-            funcs.append(var)
-    return funcs
-
-def help():
-    print(f"{funcshelp()} \n {constshelp()}")
-
-def root(x, y=2):
-    if x < 0:
-        return cmpx(0, -x ** (1/y))
-    return x ** (1/y)
-
 class cmpx:
     def __init__(self, r=0, m=0):
         self.r = r
@@ -321,6 +214,69 @@ class cmpx:
     __rmul__ = __mul__
     __rtruediv__ = lambda self, other: cmpx._to_cmpx(other).__truediv__(self)
    
+def integrate(f, v, i=None, s=None):
+    if (i !=None and s != None) and (isinstance(i, int) and isinstance(s, int)):
+        return sp.integrate(f, (v, i, s))
+    else:
+        return sp.integrate(f, v)
+
+def derivate(f, v, o=1):
+    return sp.derivate(f, v, o)
+
+def delta(x):
+    n = abs(int(x))
+    delta_n = (n + ((n ** 2) + 4) ** 0.5)/2
+    return delta_n
+    
+def nbonacci_phi(n, tol=1e-15, max_iter=1000):
+    # Inicializamos cocientes aproximados
+    ratio = 2.0
+    prev = [1.0]*n
+    for _ in range(max_iter):
+        next_val = sum(prev)
+        next_ratio = next_val / prev[-1]
+        if abs(next_ratio - ratio) < tol:
+            return next_ratio
+        ratio = next_ratio
+        prev = prev[1:] + [next_val]
+    return ratio
+
+def champernowne(base_class, base, terms=50, prec=200):
+    b = base_class(base)
+    s = ""
+    for i in range(1, terms+1):
+        s += b.to_base(i, 0)  # sin parte fraccionaria
+    return "0." + s[:prec]
+        
+    ceinf = "".join(susce)
+    c = 0 + (int(ceinf)/(base ** len(ceinf)))
+    return c
+
+def conv_angle(angle, actype, totype):
+    return angle * (totype/actype)
+
+def constshelp():
+    consts = []
+    for var, value in zip(globals().copy().keys(), globals().copy().values()):
+        if isinstance(value, float):
+            consts.append(var)
+    return consts
+
+def root(x, y=2):
+    if x < 0:
+        return cmpx(0, -x ** (1/y))
+    return x ** (1/y)
+    
+def funcshelp():
+    funcs = []
+    for var, value in globals().copy().items():
+        if isinstance(value, types.FunctionType):
+            funcs.append(var)
+    return funcs
+
+def help():
+    print(f"{funcshelp()} \n {constshelp()}")
+
 sin = lambda x: math.sin(x)
 cos = lambda x: math.cos(x)
 tan = lambda x: math.tan(x)
@@ -332,12 +288,48 @@ Symbol = lambda s: sp.Symbol(s)
 Symbols = lambda s: sp.symbols(s)
 Expand = lambda e: sp.expand(e)
 
-def integrate(f, v, i=None, s=None):
-    if (i !=None and s != None) and (isinstance(i, int) and isinstance(s, int)):
-        return sp.integrate(f, (v, i, s))
-    else:
-        return sp.integrate(f, v)
+#hiperreales
 
-def derivate(f, v, o=1):
-    return sp.derivate(f, v, o)
+inf = float('inf')
+neginf = inf * -1
+eps = 1e-20
+negeps = eps * -1
 
+# Constantes matemáticas
+PI = 3.141592653589793
+TAU = 2 * PI
+EULER = 2.718281828459045
+
+
+PHI = delta(1) # Número áureo
+PHIcong = -(PHI-1)
+delta2 = delta(2)
+delta3 = delta(3)
+
+
+    
+CHAMPERNOWNE = champernowne(BaseP, 10, 102, 200)
+
+CATALAN = 0.915965594177219  # Constante de Catalan
+ZETA2 = 1.6449340668482264   # ζ(2) = π^2 / 6
+ZETA4 = 1.082323233711138    # ζ(4) = π^4 / 90
+GLAISHER = 1.2824271291006226  # Constante de Glaisher–Kinkelin
+KAPREKAR = 6174              # Número de Kaprekar
+
+# Constantes de teoría de números y análisis
+EULER_MASCHERONI = 0.5772156649015329
+SQRT_2 = 1.4142135623730951
+SQRT_3 = 1.7320508075688772
+
+# Constantes en grados y conversiones
+RADIANS = TAU
+DEGREES = 360
+GRADIANS = 400
+
+
+    
+# Constantes que aparecen en la geometría
+APERY_CONSTANT = 1.2020569031595942 # Suma de los recíprocos de los cubos de los números naturales
+
+SQRT5 = 2.23606797749979      # Raíz cuadrada de 5
+LEMNISCATE = 2.622057554292119 # Longitud de la lemniscata de Bernoulli

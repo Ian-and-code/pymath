@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pymath"     
+version = "1.0.0" 
+authors = [
+  { name="Ian Carlos", email="iancarloscolliardlovatto@gmail.com" }
+]
+description = "A module that seeks to collect and aggregate functions and constants from different mathematical modules of python"
+readme = "README.md"
+license = { file = "LICENSE.mit" }
+requires-python = ">=3.1"
+dependencies = ["math", "sympy", "types"]        
+
+[project.urls]
+"Homepage" = "https://github.com/ian-and-code/pymath"
+"Bug Tracker" = "https://github.com/ian-and-code/pymath/issues"

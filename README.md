@@ -1,4 +1,4 @@
-# [title:README]# pymath
+# pymath
 
 A Python module that aggregates functions and constants from various mathematical modules, including support for custom numeric bases, hyperreal numbers, complex numbers, and symbolic computation.
 

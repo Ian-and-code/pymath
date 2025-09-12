@@ -44,7 +44,7 @@ pip install pymath
 ## Usage Examples
 
 ```python
-from pymath import BaseP, BaseN, plus, cmpx, Symbol, integrate
+from pymath import BaseP, BaseN, cmpx, Symbol, integrate
 
 
 # Base conversion

@@ -1,0 +1,28 @@
+name: publish in PyPI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest  # GitHub crea un entorno de Linux para ti
+
+    steps:
+    - uses: actions/checkout@v4  # Descarga tu código
+    
+    - name: Configurar Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10' # Aquí le dices qué versión de Python quieres usar
+        
+    - name: Instalar dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry  # O setuptools, wheel, etc.
+        
+    - name: Construir y publicar
+      run: poetry publish --build # Comando para construir y subir tu paquete
+      env:
+        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}
+        

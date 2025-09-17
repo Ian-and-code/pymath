@@ -237,12 +237,13 @@ class Quaternion:
                           self.x + otro.x,
                           self.y + otro.y,
                           self.z + otro.z)
-    __sub__ = lambda self, otro: self.__add__(self, otro*-1)
+    
     def __eq__(self, other):
         o = self._to_quad(other)
         return (self.w, self.x, self.y, self.z) == (o.w, o.x, o.y, o.z)
-    def __mul__(self, otro):
+    def __mul__(self, other):
         """Multiplicación de cuaterniones."""
+        otro = Quaternion._to_quat(other)
         w = self.w * otro.w - self.x * otro.x - self.y * otro.y - self.z * otro.z
         x = self.w * otro.x + self.x * otro.w + self.y * otro.z - self.z * otro.y
         y = self.w * otro.y - self.x * otro.z + self.y * otro.w + self.z * otro.x
@@ -260,14 +261,16 @@ class Quaternion:
     __truediv__ = lambda self, other: __mul__(self, 1 / other)
     def __neg__(self):
         return Quaternion(-self.w, -self.x, -self.y, -self.z)
+    __sub__ = lambda self, otro: self.__add__(self, -otro)
+
     def magnitude(self):
         """Calcula la magnitud (norma) del cuaternión."""
         return (self.w**2 + self.x**2 + self.y**2 + self.z**2)**0.5
     
     __radd__ = __add__
-    __rsub__ = lambda self, other: cmpx._to_quat(other).__sub__(self)
+    __rsub__ = lambda self, other: Quaternion._to_quat(other).__sub__(self)
     __rmul__ = __mul__
-    __rtruediv__ = lambda self, other: cmpx._to_quat(other).__truediv__(self)
+    __rtruediv__ = lambda self, other: Quaternion._to_quat(other).__truediv__(self)
 
 def integrate(f, v, i=None, s=None):
     if (i !=None and s != None) and (isinstance(i, int) and isinstance(s, int)):
@@ -302,10 +305,6 @@ def champernowne(base_class, base, terms=50, prec=200):
     for i in range(1, terms+1):
         s += b.to_base(i, 0)  # sin parte fraccionaria
     return "0." + s[:prec]
-
-    ceinf = "".join(susce)
-    c = 0 + (int(ceinf)/(base ** len(ceinf)))
-    return c
 
 def conv_angle(angle, actype, totype):
     return angle * (totype/actype)

@@ -2,6 +2,18 @@ import types
 import math
 import sympy as sp
 
+def accept_bases(func):
+    """Convierte a decimal antes de la función y devuelve en la misma base si se pasa una tupla."""
+    def wrapper(arg):
+        if isinstance(arg, tuple) and len(arg) == 2 and isinstance(arg[0], Base):
+            base_obj, valor = arg
+            dec = base_obj.to_10(valor)
+            resultado = func(dec)
+            return base_obj.to_base(resultado)
+        else:
+            return func(arg)
+    return wrapper
+
 class Base:
     def __init__(self, base):
         self.digitos = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

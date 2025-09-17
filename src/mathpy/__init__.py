@@ -208,11 +208,59 @@ class cmpx:
         o = self._to_cmpx(other)
         return self.r == o.r and self.m == o.m
 
+    
+
     # Opcional: soporte para +, -, *, / con lado derecho siendo otro tipo
     __radd__ = __add__
     __rsub__ = lambda self, other: cmpx._to_cmpx(other).__sub__(self)
     __rmul__ = __mul__
     __rtruediv__ = lambda self, other: cmpx._to_cmpx(other).__truediv__(self)
+
+    def magnitude(self):
+        """Calcula la magnitud (norma) del cuaternión."""
+        return (self.r**2 + self.m**2)**0.5
+
+class Quaternion:
+    def __init__(self, w, x, y, z):
+        self.w = w  # Parte escalar
+        self.x = x  # Parte vectorial (eje i)
+        self.y = y  # Parte vectorial (eje j)
+        self.z = z  # Parte vectorial (eje k)
+
+    def __str__(self):
+        return f"({self.w} + {self.x}i + {self.y}j + {self.z}k)"
+
+    def __add__(self, otro):
+        """Suma de cuaterniones."""
+        return Quaternion(self.w + otro.w,
+                          self.x + otro.x,
+                          self.y + otro.y,
+                          self.z + otro.z)
+
+    def __mul__(self, otro):
+        """Multiplicación de cuaterniones."""
+        w = self.w * otro.w - self.x * otro.x - self.y * otro.y - self.z * otro.z
+        x = self.w * otro.x + self.x * otro.w + self.y * otro.z - self.z * otro.y
+        y = self.w * otro.y - self.x * otro.z + self.y * otro.w + self.z * otro.x
+        z = self.w * otro.z + self.x * otro.y - self.y * otro.x + self.z * otro.w
+        return Quaternion(w, x, y, z)
+    def _to_quad(other):
+        if isinstance(other, cmpx):
+            return other
+        elif isinstance(other, (int, float)):
+            return Quaternion(other, 0, 0, 0)
+        elif isinstance(other, list) and len(other) == 4:
+            return Quaternion(other[0], other[1], other[2], other[3])
+        else:
+            raise TypeError(f"Cannot convert {other} to Quaternion")
+    def magnitude(self):
+        """Calcula la magnitud (norma) del cuaternión."""
+        return (self.w**2 + self.x**2 + self.y**2 + self.z**2)**0.5
+    
+    __radd__ = __add__
+    __rsub__ = lambda self, other: cmpx._to_cmpx(other).__sub__(self)
+    __rmul__ = __mul__
+    __rtruediv__ = lambda self, other: cmpx._to_quat(other).__truediv__(self)
 
 def integrate(f, v, i=None, s=None):
     if (i !=None and s != None) and (isinstance(i, int) and isinstance(s, int)):

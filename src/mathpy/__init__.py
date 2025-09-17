@@ -226,6 +226,7 @@ class Quaternion:
         self.x = x  # Parte vectorial (eje i)
         self.y = y  # Parte vectorial (eje j)
         self.z = z  # Parte vectorial (eje k)
+        self.value = [w, x*1j, y*1j, z*1j]
 
     def __str__(self):
         return f"({self.w} + {self.x}i + {self.y}j + {self.z}k)"

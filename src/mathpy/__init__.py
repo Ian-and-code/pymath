@@ -332,7 +332,7 @@ def funcshelp():
             funcs.append(var)
     return funcs
 
-def help():
+def completehelp():
     print(f"{funcshelp()} \n {constshelp()}")
 
 sin = lambda x: math.sin(x)

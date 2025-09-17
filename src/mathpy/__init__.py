@@ -106,12 +106,10 @@ class BaseN(Base):
         return val
 
     def _to_10_frac(self, frac):
+        # Ahora usando la base real (negativa o positiva)
         val = 0
-        b = abs(self.base)
-        for i, d in enumerate(frac):
-            val += self.digitos.index(d) / (b ** (i+1))
-        if len(frac) % 2 == 1:
-            val = -val
+        for i, d in enumerate(frac, start=1):
+            val += self.digitos.index(d) * (self.base ** -i)
         return val
 
     def to_base(self, n, prec=10):
@@ -131,17 +129,20 @@ class BaseN(Base):
                     r -= self.base
                 res_ent = self.digitos[r] + res_ent
 
-        # Parte fraccionaria (aproximada)
+        # Parte fraccionaria (ahora sí con base negativa si toca)
         res_frac = ""
         if frac != 0:
-            b = abs(self.base)
-            res_frac += "."
+            res_frac = "."
+            f = frac
             for _ in range(prec):
-                frac *= b
-                dig = int(frac)
+                f *= self.base
+                dig = int(f)
+                f -= dig
+                if dig < 0:   # mismo ajuste que arriba
+                    dig += abs(self.base)
+                    f += 1
                 res_frac += self.digitos[dig]
-                frac -= dig
-                if frac == 0:
+                if f == 0:
                     break
 
         return res_ent + res_frac
@@ -318,7 +319,10 @@ def constshelp():
 
 def root(x, y=2):
     if x < 0:
-        return cmpx(0, -x ** (1/y))
+        if y % 2 == 0:  # raíz par
+            return cmpx(0, (-x) ** (1/y))
+        else:           # raíz impar
+            return -((-x) ** (1/y))
     return x ** (1/y)
 
 def funcshelp():

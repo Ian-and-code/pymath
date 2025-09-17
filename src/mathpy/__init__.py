@@ -237,7 +237,10 @@ class Quaternion:
                           self.x + otro.x,
                           self.y + otro.y,
                           self.z + otro.z)
-
+    __sub__ = lambda self, otro: self.__add__(self, otro*-1)
+    def __eq__(self, other):
+        o = self._to_quad(other)
+        return (self.w, self.x, self.y, self.z) == (o.w, o.x, o.y, o.z)
     def __mul__(self, otro):
         """Multiplicación de cuaterniones."""
         w = self.w * otro.w - self.x * otro.x - self.y * otro.y - self.z * otro.z
@@ -254,12 +257,15 @@ class Quaternion:
             return Quaternion(other[0], other[1], other[2], other[3])
         else:
             raise TypeError(f"Cannot convert {other} to Quaternion")
+    __truediv__ = lambda self, other: __mul__(self, 1 / other)
+    def __neg__(self):
+        return Quaternion(-self.w, -self.x, -self.y, -self.z)
     def magnitude(self):
         """Calcula la magnitud (norma) del cuaternión."""
         return (self.w**2 + self.x**2 + self.y**2 + self.z**2)**0.5
     
     __radd__ = __add__
-    __rsub__ = lambda self, other: cmpx._to_cmpx(other).__sub__(self)
+    __rsub__ = lambda self, other: cmpx._to_quat(other).__sub__(self)
     __rmul__ = __mul__
     __rtruediv__ = lambda self, other: cmpx._to_quat(other).__truediv__(self)
 

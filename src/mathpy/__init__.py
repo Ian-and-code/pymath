@@ -4,14 +4,25 @@ import sympy as sp
 
 def accept_bases(func):
     """Convierte a decimal antes de la función y devuelve en la misma base si se pasa una tupla."""
-    def wrapper(arg):
-        if isinstance(arg, tuple) and len(arg) == 2 and isinstance(arg[0], (Base, BaseP, BaseN)):
-            base_obj, valor = arg
-            dec = base_obj.to_10(valor)
-            resultado = func(dec)
+    def wrapper(*args, **kwargs):
+        new_args = []
+        base_obj = None
+
+        for arg in args:
+            if isinstance(arg, tuple) and len(arg) == 2 and isinstance(arg[0], Base):
+                b, val = arg
+                new_args.append(b.to_10(val))
+                if base_obj is None:
+                    base_obj = b
+            else:
+                new_args.append(arg)
+
+        resultado = func(*new_args, **kwargs)
+
+        if base_obj is not None:
             return base_obj.to_base(resultado)
-        else:
-            return func(arg)
+        return resultado
+
     return wrapper
 
 class Base:
@@ -293,12 +304,12 @@ def integrate(f, v, i=None, s=None):
 
 def derivate(f, v, o=1):
     return sp.derivate(f, v, o)
-
+@accept_bases
 def delta(x):
     n = abs(int(x))
     delta_n = (n + ((n ** 2) + 4) ** 0.5)/2
     return delta_n
-
+@accept_bases
 def nbonacci_phi(n, tol=1e-15, max_iter=1000):
     # Inicializamos cocientes aproximados
     ratio = 2.0
@@ -311,14 +322,14 @@ def nbonacci_phi(n, tol=1e-15, max_iter=1000):
         ratio = next_ratio
         prev = prev[1:] + [next_val]
     return ratio
-
+@accept_bases
 def champernowne(base_class, base, terms=50, prec=200):
     b = base_class(base)
     s = ""
     for i in range(1, terms+1):
         s += b.to_base(i, 0)  # sin parte fraccionaria
     return "0." + s[:prec]
-
+@accept_bases
 def conv_angle(angle, actype, totype):
     return angle * (totype/actype)
 
@@ -328,7 +339,7 @@ def constshelp():
         if isinstance(value, float):
             consts.append(var)
     return consts
-
+@accept_bases
 def root(x, y=2):
     if x < 0:
         if y % 2 == 0:  # raíz par

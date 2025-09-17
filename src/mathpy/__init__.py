@@ -5,7 +5,7 @@ import sympy as sp
 def accept_bases(func):
     """Convierte a decimal antes de la función y devuelve en la misma base si se pasa una tupla."""
     def wrapper(arg):
-        if isinstance(arg, tuple) and len(arg) == 2 and isinstance(arg[0], Base):
+        if isinstance(arg, tuple) and len(arg) == 2 and isinstance(arg[0], (Base, BaseP, BaseN)):
             base_obj, valor = arg
             dec = base_obj.to_10(valor)
             resultado = func(dec)
